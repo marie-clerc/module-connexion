@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <title>Inscription</title>
+</head>
+<?php
+    // Initialiser la session
+    session_start();
+    // si le bouton "inscription" est appuyé
+    if(isset($_POST['inscription']))
+    {
+        //on parcourt le formulaire
+        if (isset($_POST['login']) && isset($_POST['prenom']) && isset($_POST['nom']) && isset($_POST['password']))
+        {
+            // et on transforme les $post en variable
+            $login = $_POST['login'];
+            $prenom = $_POST['prenom'];
+            $nom = $_POST['nom'];
+            $password = $_POST['password'];
+
+            //on verifie si les deux mots de passe sont identique
+            if ( $_POST['confirm_pass'] != $_POST['password'] )
+            {
+                echo "Les 2 mots de passe sont différents";
+            }
+            //on vérifie que les input ne sont pas vides
+            else if (strlen($login) < 3 || strlen($prenom) < 3 || strlen($nom) < 3 || strlen($password) < 3)
+            {
+                echo 'pas assez de caractères';
+            }
+            else
+            {
+                //on se connecte à la base de données:
+                $db = mysqli_connect ('localhost','root', '', 'moduleconnexion');
+                //on fait la requête dans la bd pour insérer les nouvelles infos:
+                $query = mysqli_query ($db, "INSERT INTO `utilisateurs`(`login`, `prenom`, `nom`, `password`) VALUES (\"$login\",\"$prenom\",\"$nom\",\"$password\")");
+                //on redirige sur la page connexion.php quand c'est terminer.
+                header ('location:connexion.php');
+            }
+        }
+    }
+?>
+<body>
+
+    <!--Le formulaire doit contenir l’ensemble des champs présents dans la table
+    “utilisateurs” (sauf “id”) + une confirmation de mot de passe. Dès qu’un
+    utilisateur remplit ce formulaire, les données sont insérées dans la base de
+    données et l’utilisateur est redirigé vers la page de connexion.-->
+
+    <!--formulaire d'inscription-->
+    <div class="center">
+        <h1>Inscription</h1>
+
+        <form action="inscription.php" method="POST">
+
+            <div class="txt_field">
+                <input type="text" name="login" required>
+                <span></span>
+                <label for="login">Login</label> <!--champs login dans la table utilisateurs-->
+            </div>
+
+            <div class="txt_field">
+                <input type="text" name="prenom" required>
+                <span></span>
+                <label for="prenom">Prénom</label> <!--champs prenom dans la table utilisateurs-->
+            </div>
+
+            <div class="txt_field">
+                <input type="text" name="nom" required>
+                <span></span>
+                <label for="nom">Nom</label> <!--champs nom dans la table utilisateurs-->
+            </div>
+
+            <div class="txt_field">
+                <input type="password" name="password" required>
+                <span></span>
+                <label for="password">Mot de passe</label> <!--champs password dans la table utilisateurs-->
+            </div>
+
+            <div class="txt_field">
+                <input type="password" name="confirm_pass" required>
+                <span></span>
+                <label for="confirm_pass">Confirmez votre mot de passe</label> <!--une confirmation de mot de passe-->
+            </div>
+
+            <input type="submit" name="inscription" value="S'inscrire" action="connexion.php"><!--mon bouton inscription-->
+
+            <div class="signup_link">
+                Déjà membre? <a href="connexion.php">Connexion</a> <br>
+                <a href="index.php">Accueil</a>
+            </div>
+        </form>
+    </div>
+</body>
+</html>
