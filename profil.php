@@ -53,7 +53,7 @@
                 }
 
                 //on vérifie si il y a assez de char
-                else if (strlen($login) < 3 || strlen($prenom) < 3 || strlen($nom) < 3 || strlen($password) < 3)
+                else if (strlen($login) < 3 || strlen($prenom) < 3 || strlen($nom) < 3 || strlen($newpass) < 3)
                 {
                     echo 'pas assez de caractères';
                 }
