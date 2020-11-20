@@ -22,7 +22,7 @@
             $db = mysqli_connect('localhost','root', '', 'moduleconnexion');
             //on fait la requête dans la bd pour rechercher si ces données existent et correspondent:
             $query = mysqli_query($db,"SELECT * FROM `utilisateurs` WHERE login=\"$login\" AND password=\"$password\"");
-            //variable necessaire pour récupérer les infos du l'utilisateur 
+            //variable necessaire pour récupérer les infos du l'utilisateur, et pour les utiliser sur d'autre page 
             $var = mysqli_fetch_array($query);
             // si il y a un résultat, mysqli_num_rows() nous donnera alors 1
             // si mysqli_num_rows() retourne 0 c'est qu'il a trouvé aucun résultat

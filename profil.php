@@ -46,12 +46,33 @@
                 $nom = $_POST['nom'];
                 $newpass = $_POST['new_pass'];
 
-                //alors on vérifie s'ils sont identiques par vérifier s'ils sont différents
+                //on vérifie si nouveaux mdp sont identiques par vérifier s'ils sont différents
                 if($_POST["new_pass"] != $_POST["confirm_new_pass"] ) {
                     //s'ils sont différents echo
                     echo 'les nouveaux mots de passe sont différents';
                 }
-                else 
+
+                //on vérifie si il y a assez de char
+                else if (strlen($login) < 3 || strlen($prenom) < 3 || strlen($nom) < 3 || strlen($password) < 3)
+                {
+                    echo 'pas assez de caractères';
+                }
+
+                //on vérifie si l'utilisateur à mis un nouveau login
+                else if ($_SESSION['login'] != $login)
+                {
+                    //on se connecte à la base de données:
+                    $db = mysqli_connect('localhost','root', '', 'moduleconnexion');
+                    //on fait la requête dans la bd pour rechercher si ces données existent:
+                    $query = mysqli_query($db,"SELECT * FROM `utilisateurs` WHERE `login`='$login'");
+                    // si il y a un résultat, mysqli_num_rows() nous donnera alors 1
+                    // si mysqli_num_rows() retourne 0 c'est qu'il a trouvé aucun résultat
+                    if(mysqli_num_rows($query) == 1) 
+                    { 
+                        echo 'Le login est déjà prit';
+                    } 
+                }
+                else //quand tout va bien
                 {
                     //récupération de l'identifiant du user
                     $id = $_SESSION['id'];
@@ -74,7 +95,7 @@
                     else {
                         echo 'la modification a échouée';
                     }
-                }//fin else nouveaux mdp identiques
+                }//fin else quand tout va bien
             }//fin du mot de passe correct
         }// fin isset passaword
     }// fin isset bouton update

@@ -12,33 +12,52 @@
     // si le bouton "inscription" est appuyé
     if(isset($_POST['inscription']))
     {
-        //on parcourt le formulaire
-        if (isset($_POST['login']) && isset($_POST['prenom']) && isset($_POST['nom']) && isset($_POST['password']))
-        {
-            // et on transforme les $post en variable
+        //on vérifie si le login est déjà prit ou non
+        if (isset($_POST['login']))
+        { 
+            //on transforme les $post en variable
             $login = $_POST['login'];
-            $prenom = $_POST['prenom'];
-            $nom = $_POST['nom'];
-            $password = $_POST['password'];
+            //on se connecte à la base de données:
+            $db = mysqli_connect('localhost','root', '', 'moduleconnexion');
+            //on fait la requête dans la bd pour rechercher si ces données existent:
+            $query = mysqli_query($db,"SELECT * FROM `utilisateurs` WHERE `login`='$login'");
+            // si il y a un résultat, mysqli_num_rows() nous donnera alors 1
+            // si mysqli_num_rows() retourne 0 c'est qu'il a trouvé aucun résultat
+            if(mysqli_num_rows($query) == 0) 
+            { 
+                //on parcourt le formulaire
+                if (isset($_POST['login']) && isset($_POST['prenom']) && isset($_POST['nom']) && isset($_POST['password']))
+                {
+                    // et on transforme les $post en variable
+                    $login = $_POST['login'];
+                    $prenom = $_POST['prenom'];
+                    $nom = $_POST['nom'];
+                    $password = $_POST['password'];
 
-            //on verifie si les deux mots de passe sont identique
-            if ( $_POST['confirm_pass'] != $_POST['password'] )
-            {
-                echo "Les 2 mots de passe sont différents";
+                    //on verifie si les deux mots de passe sont identique
+                    if ( $_POST['confirm_pass'] != $_POST['password'] )
+                    {
+                        echo "Les 2 mots de passe sont différents";
+                    }
+                    //on vérifie que les input ne sont pas vides
+                    else if (strlen($login) < 3 || strlen($prenom) < 3 || strlen($nom) < 3 || strlen($password) < 3)
+                    {
+                        echo 'pas assez de caractères';
+                    }
+                    else
+                    {
+                        //on se connecte à la base de données:
+                        $db = mysqli_connect ('localhost','root', '', 'moduleconnexion');
+                        //on fait la requête dans la bd pour insérer les nouvelles infos:
+                        $query1 = mysqli_query ($db, "INSERT INTO `utilisateurs`(`login`, `prenom`, `nom`, `password`) VALUES (\"$login\",\"$prenom\",\"$nom\",\"$password\")");
+                        //on redirige sur la page connexion.php quand c'est terminer.
+                        header ('location:connexion.php');
+                    }
+                }
             }
-            //on vérifie que les input ne sont pas vides
-            else if (strlen($login) < 3 || strlen($prenom) < 3 || strlen($nom) < 3 || strlen($password) < 3)
+            else 
             {
-                echo 'pas assez de caractères';
-            }
-            else
-            {
-                //on se connecte à la base de données:
-                $db = mysqli_connect ('localhost','root', '', 'moduleconnexion');
-                //on fait la requête dans la bd pour insérer les nouvelles infos:
-                $query = mysqli_query ($db, "INSERT INTO `utilisateurs`(`login`, `prenom`, `nom`, `password`) VALUES (\"$login\",\"$prenom\",\"$nom\",\"$password\")");
-                //on redirige sur la page connexion.php quand c'est terminer.
-                header ('location:connexion.php');
+                echo "Le login est déjà prit";
             }
         }
     }
